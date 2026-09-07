@@ -9,214 +9,219 @@ import {
   Info,
   Settings,
   HelpCircle,
+  Menu,
+  X,
   Sparkles,
 } from "lucide-react";
+import { useState } from "react";
 
-const mainNav = [
+const navItems = [
   {
-    label: "Home",
+    name: "Home",
     href: "/",
     icon: Home,
   },
   {
-    label: "Evaluate Content",
+    name: "Evaluate Content",
     href: "/",
     icon: FileText,
   },
   {
-    label: "History",
+    name: "History",
     href: "/history",
     icon: History,
   },
   {
-    label: "About",
+    name: "About",
     href: "/about",
     icon: Info,
   },
 ];
 
-const bottomNav = [
-  {
-    label: "Settings",
-    href: "#",
-    icon: Settings,
-  },
-  {
-    label: "Help & Support",
-    href: "#",
-    icon: HelpCircle,
-  },
-];
-
 export default function Sidebar() {
   const pathname = usePathname();
+  const [mobileOpen, setMobileOpen] = useState(false);
 
-  const isHome = pathname === "/";
-  const isHistory = pathname === "/history";
-  const isAbout = pathname === "/about";
+  const isActive = (href: string) => {
+    if (href === "/") {
+      return pathname === "/";
+    }
+
+    return pathname.startsWith(href);
+  };
+
+  const closeMobileMenu = () => {
+    setMobileOpen(false);
+  };
 
   return (
-    <aside className="sticky top-[72px] hidden h-[calc(100vh-72px)] w-[250px] shrink-0 overflow-hidden border-r border-slate-200 bg-white lg:flex lg:flex-col">
-      {/* =====================================================
-          BRAND / PROJECT HEADER
-      ===================================================== */}
-      <div className="relative z-20 border-b border-slate-200 bg-white px-5 py-5">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-cyan-500 text-white shadow-md shadow-blue-500/20">
-            <Sparkles className="h-5 w-5" />
+    <>
+      {/* Mobile Menu Button */}
+      <button
+        onClick={() => setMobileOpen(true)}
+        aria-label="Open navigation menu"
+        className="fixed left-4 top-[65px] z-40 flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 shadow-md transition hover:bg-slate-50 lg:hidden"
+      >
+        <Menu className="h-5 w-5" />
+      </button>
+
+      {/* Mobile Overlay */}
+      {mobileOpen && (
+        <div
+          onClick={closeMobileMenu}
+          className="fixed inset-0 z-40 bg-slate-900/30 backdrop-blur-[2px] lg:hidden"
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside
+        className={`
+          fixed left-0 top-[72px] z-50
+          flex h-[calc(100vh-72px)] w-[250px]
+          flex-col overflow-hidden
+          border-r border-slate-200 bg-white
+          shadow-xl
+          transition-transform duration-300 ease-in-out
+
+          ${
+            mobileOpen
+              ? "translate-x-0"
+              : "-translate-x-full"
+          }
+
+          lg:sticky
+          lg:top-[72px]
+          lg:z-30
+          lg:translate-x-0
+          lg:shadow-none
+        `}
+      >
+        {/* Mobile Header */}
+        <div className="flex items-center justify-between border-b border-slate-100 px-4 py-4 lg:hidden">
+          <div className="flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-cyan-500 text-white">
+              <Sparkles className="h-4 w-4" />
+            </div>
+
+            <div>
+              <p className="text-sm font-bold text-slate-900">
+                Your Brand
+              </p>
+
+              <p className="text-[11px] text-slate-500">
+                Cultural AI
+              </p>
+            </div>
           </div>
 
-          <div className="min-w-0">
-            <h2 className="truncate text-[15px] font-bold tracking-tight text-slate-900">
-              Your Brand Cultural AI
-            </h2>
-
-            <p className="mt-0.5 text-[11px] text-slate-400">
-              Project Name
-            </p>
-          </div>
+          <button
+            onClick={closeMobileMenu}
+            aria-label="Close navigation menu"
+            className="flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
+          >
+            <X className="h-5 w-5" />
+          </button>
         </div>
-      </div>
 
-      {/* =====================================================
-          NAVIGATION
-      ===================================================== */}
-      <div className="relative z-20 flex-1 overflow-y-auto px-3 py-4">
-        <nav className="space-y-1.5">
-          {/* HOME */}
-          <Link
-            href="/"
-            className={`group flex h-11 items-center gap-3 rounded-xl px-4 text-sm font-medium transition-all duration-200 ${
-              isHome
-                ? "bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-md shadow-blue-500/20"
-                : "text-slate-600 hover:bg-blue-50 hover:text-blue-600"
-            }`}
-          >
-            <Home
-              className={`h-[18px] w-[18px] ${
-                isHome
-                  ? "text-white"
-                  : "text-slate-500 group-hover:text-blue-600"
-              }`}
-            />
+        {/* Content */}
+        <div className="relative z-10 flex min-h-0 flex-1 flex-col">
+          {/* Desktop Brand */}
+          <div className="hidden px-5 pb-5 pt-6 lg:block">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-cyan-500 text-white shadow-sm">
+                <Sparkles className="h-5 w-5" />
+              </div>
 
-            <span>Home</span>
-          </Link>
+              <div>
+                <p className="text-sm font-bold text-slate-900">
+                  Your Brand
+                </p>
 
-          {/* EVALUATE CONTENT */}
-          <Link
-            href="/"
-            className={`group flex h-11 items-center gap-3 rounded-xl px-4 text-sm font-medium transition-all duration-200 ${
-              pathname === "/evaluate"
-                ? "bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-md shadow-blue-500/20"
-                : "text-slate-600 hover:bg-blue-50 hover:text-blue-600"
-            }`}
-          >
-            <FileText
-              className={`h-[18px] w-[18px] ${
-                pathname === "/evaluate"
-                  ? "text-white"
-                  : "text-slate-500 group-hover:text-blue-600"
-              }`}
-            />
+                <p className="text-xs text-slate-500">
+                  Cultural AI
+                </p>
+              </div>
+            </div>
+          </div>
 
-            <span>Evaluate Content</span>
-          </Link>
-
-          {/* HISTORY */}
-          <Link
-            href="/history"
-            className={`group flex h-11 items-center gap-3 rounded-xl px-4 text-sm font-medium transition-all duration-200 ${
-              isHistory
-                ? "bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-md shadow-blue-500/20"
-                : "text-slate-600 hover:bg-blue-50 hover:text-blue-600"
-            }`}
-          >
-            <History
-              className={`h-[18px] w-[18px] ${
-                isHistory
-                  ? "text-white"
-                  : "text-slate-500 group-hover:text-blue-600"
-              }`}
-            />
-
-            <span>History</span>
-          </Link>
-
-          {/* ABOUT */}
-          <Link
-            href="/about"
-            className={`group flex h-11 items-center gap-3 rounded-xl px-4 text-sm font-medium transition-all duration-200 ${
-              isAbout
-                ? "bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-md shadow-blue-500/20"
-                : "text-slate-600 hover:bg-blue-50 hover:text-blue-600"
-            }`}
-          >
-            <Info
-              className={`h-[18px] w-[18px] ${
-                isAbout
-                  ? "text-white"
-                  : "text-slate-500 group-hover:text-blue-600"
-              }`}
-            />
-
-            <span>About</span>
-          </Link>
-        </nav>
-      </div>
-
-      {/* =====================================================
-          BOTTOM AREA
-      ===================================================== */}
-      <div className="relative z-20 border-t border-slate-200 bg-white">
-        <div className="px-3 py-3">
-          <nav className="space-y-1.5">
-            {bottomNav.map((item) => {
+          {/* Navigation */}
+          <nav className="space-y-1 px-3 pt-4 lg:pt-0">
+            {navItems.map((item) => {
               const Icon = item.icon;
+              const active = isActive(item.href);
 
               return (
                 <Link
-                  key={item.label}
+                  key={item.name}
                   href={item.href}
-                  className="group flex h-11 items-center gap-3 rounded-xl px-4 text-sm font-medium text-slate-600 transition-all duration-200 hover:bg-blue-50 hover:text-blue-600"
+                  onClick={closeMobileMenu}
+                  className={`
+                    flex items-center gap-3 rounded-xl px-3 py-3
+                    text-sm font-medium transition-all
+                    ${
+                      active
+                        ? "bg-blue-50 text-blue-700 shadow-sm"
+                        : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                    }
+                  `}
                 >
-                  <Icon className="h-[18px] w-[18px] text-slate-500 transition group-hover:text-blue-600" />
+                  <Icon
+                    className={`h-[18px] w-[18px] ${
+                      active
+                        ? "text-blue-600"
+                        : "text-slate-500"
+                    }`}
+                  />
 
-                  <span>{item.label}</span>
+                  <span>{item.name}</span>
                 </Link>
               );
             })}
           </nav>
+
+          {/* Bottom Navigation */}
+          <div className="mt-auto px-3 pb-4">
+            <div className="mb-3 border-t border-slate-100" />
+
+            <button className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900">
+              <Settings className="h-[18px] w-[18px] text-slate-500" />
+              <span>Settings</span>
+            </button>
+
+            <button className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900">
+              <HelpCircle className="h-[18px] w-[18px] text-slate-500" />
+              <span>Help & Support</span>
+            </button>
+          </div>
         </div>
 
-        {/* ===================================================
-            UNIVERSITY / CULTURAL IMAGE
-        =================================================== */}
-        <div className="relative h-[190px] overflow-hidden border-t border-slate-100">
-          {/* Background Image */}
+        {/* Cultural Image */}
+        <div className="relative h-[170px] shrink-0 overflow-hidden">
           <img
             src="/images/cultural-sidebar.png"
             alt="Chinese cultural landscape"
             className="absolute inset-0 h-full w-full object-cover object-bottom opacity-75"
           />
 
-          {/* Soft white overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-white via-white/70 to-white/10" />
+          <div className="absolute inset-0 bg-gradient-to-t from-white via-white/40 to-transparent" />
 
-          {/* University Text */}
-          <div className="absolute inset-x-0 bottom-5 z-10 px-4 text-center">
-            <div className="mx-auto mb-2 h-px w-12 bg-blue-300/70" />
+          <div className="relative z-10 flex h-full items-end p-5">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                Project Name
+              </p>
 
-            <p className="text-[12px] font-bold tracking-wide text-slate-800">
-              Your University
-            </p>
+              <p className="mt-1 text-xs text-slate-500">
+                Your University
+              </p>
 
-            <p className="mt-1 text-[10px] text-slate-500">
-              Your City, Country
-            </p>
+              <p className="text-xs text-slate-400">
+                Your City, Country
+              </p>
+            </div>
           </div>
         </div>
-      </div>
-    </aside>
+      </aside>
+    </>
   );
 }
